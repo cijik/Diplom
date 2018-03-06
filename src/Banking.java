@@ -20,7 +20,7 @@ public class Banking extends JFrame {
     private JTextArea textArea1;
     private JComboBox comboBox2;
 
-    public Banking() throws IOException {
+    private Banking() throws IOException {
 
         setTitle("BankingApp");
         setSize(500, 500);
@@ -28,19 +28,37 @@ public class Banking extends JFrame {
             UIManager.setLookAndFeel(UIManager
                     .getSystemLookAndFeelClassName());
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Document doc = Jsoup.connect("https://point.md/ru/").get();
 
-        Element rate = doc.select("td#money-trade-buy-usd").first();
-
-        comboBox1.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
+        Element rateUsd = doc.select("td#money-trade-buy-usd").first();
+        Element rateEur = doc.select("td#money-trade-buy-eur").first();
+        Element rateRub = doc.select("td#money-trade-buy-rub").first();
+        Element rateRon = doc.select("td#money-trade-buy-ron").first();
+        Element rateUah = doc.select("td#money-trade-buy-uah").first();
+        Element rateGbp = doc.select("td#money-trade-buy-gbp").first();
+        comboBox1.addItemListener((ItemEvent e) -> {
                 if (e.getItem() == "USD") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rate.text())));
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateUsd.text())));
                 }
-            }
+                if (e.getItem() == "EUR") {
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateEur.text())));
+                }
+                if (e.getItem() == "RUB") {
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateRub.text())));
+                }
+                if (e.getItem() == "RON") {
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateRon.text())));
+                }
+                if (e.getItem() == "UAH") {
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateUah.text())));
+                }
+                if (e.getItem() == "GBP") {
+                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateGbp.text())));
+                }
+
         });
     }
 

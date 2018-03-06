@@ -34,7 +34,10 @@
                     <item value=""/>
                     <item value="USD"/>
                     <item value="EUR"/>
-                    <item value="RUR"/>
+                    <item value="RUB"/>
+                    <item value="RON"/>
+                    <item value="UAH"/>
+                    <item value="GBP"/>
                   </model>
                 </properties>
               </component>
