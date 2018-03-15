@@ -25,6 +25,7 @@
                 <constraints/>
                 <properties>
                   <columns value="10"/>
+                  <text value=""/>
                 </properties>
               </component>
               <component id="b1cfb" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">

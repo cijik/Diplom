@@ -1,14 +1,11 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
-
+import java.util.ArrayList;
 
 public class Banking extends JFrame {
 
@@ -33,33 +30,32 @@ public class Banking extends JFrame {
 
         Document doc = Jsoup.connect("https://point.md/ru/").get();
 
-        Element rateUsd = doc.select("td#money-trade-buy-usd").first();
-        Element rateEur = doc.select("td#money-trade-buy-eur").first();
-        Element rateRub = doc.select("td#money-trade-buy-rub").first();
-        Element rateRon = doc.select("td#money-trade-buy-ron").first();
-        Element rateUah = doc.select("td#money-trade-buy-uah").first();
-        Element rateGbp = doc.select("td#money-trade-buy-gbp").first();
-        comboBox1.addItemListener((ItemEvent e) -> {
-                if (e.getItem() == "USD") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateUsd.text())));
-                }
-                if (e.getItem() == "EUR") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateEur.text())));
-                }
-                if (e.getItem() == "RUB") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateRub.text())));
-                }
-                if (e.getItem() == "RON") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateRon.text())));
-                }
-                if (e.getItem() == "UAH") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateUah.text())));
-                }
-                if (e.getItem() == "GBP") {
-                    textField1.setText(Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(rateGbp.text())));
-                }
+        ArrayList<Element> rates = new ArrayList<>();
+        rates.add(doc.select("td#money-trade-buy-usd").first());
+        rates.add(doc.select("td#money-trade-buy-eur").first());
+        rates.add(doc.select("td#money-trade-buy-rub").first());
+        rates.add(doc.select("td#money-trade-buy-ron").first());
+        rates.add(doc.select("td#money-trade-buy-uah").first());
+        rates.add(doc.select("td#money-trade-buy-gbp").first());
 
+        comboBox1.addItemListener((ItemEvent e) -> {
+            switch((String)e.getItem()){
+                case "USD":fillField(rates.get(0));break;
+                case "EUR":fillField(rates.get(1));break;
+                case "RUB":fillField(rates.get(2));break;
+                case "RON":fillField(rates.get(3));break;
+                case "UAH":fillField(rates.get(4));break;
+                case "GBP":fillField(rates.get(5));break;
+            }
         });
+    }
+
+    private String calculate(Element e){
+        return Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(e.text()));
+    }
+
+    private void fillField(Element e){
+        textField1.setText(calculate(e));
     }
 
     public static void main(String[] args) throws IOException {
