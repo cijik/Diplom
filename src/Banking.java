@@ -70,62 +70,49 @@ public class Banking extends JFrame {
         }
 
         OutputStream outputStream = Files.newOutputStream(file);
+        String url;
 
         for (int i = 0; i > -8; i--) {
             date = getDayString(i);
             outputStream.write(date.getBytes());
             outputStream.write(System.lineSeparator().getBytes());
-            doc = db.parse(new URL("https://www.bnm.md/en/official_exchange_rates?get_xml=1&date=" + date).openStream());
-            classElement = (Element) doc.getElementsByTagName("Valute").item(0); //TODO: fix the XML tag search
-            switch (classElement.getAttribute("ID")) {
-                case "44":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(1))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(1));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(1).toString().getBytes());
-                        outputStream.write(rates.get(0).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
-                case "47":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(0))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(0));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(0).toString().getBytes());
-                        outputStream.write(rates.get(1).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
-                case "36":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(2))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(2));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(2).toString().getBytes());
-                        outputStream.write(rates.get(2).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
-                case "35":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(3))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(3));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(3).toString().getBytes());
-                        outputStream.write(rates.get(3).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
-                case "43":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(4))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(4));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(4).toString().getBytes());
-                        outputStream.write(rates.get(4).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
-                case "17":
-                    if (!rates.contains((Element)doc.getElementsByTagName("Value").item(17))) {
-                        rates.add((Element) doc.getElementsByTagName("Value").item(17));
-                        outputStream.write(doc.getElementsByTagName("CharCode").item(17).toString().getBytes());
-                        outputStream.write(rates.get(5).toString().getBytes());
-                        outputStream.write(System.lineSeparator().getBytes());
-                    }
-                    break;
+            url = "https://www.bnm.md/en/official_exchange_rates?get_xml=1&date=" + date;
+            doc = db.parse(new URL(url).openStream());
+            for (int j = 0; j < doc.getElementsByTagName("Valute").getLength(); j++) {
+                classElement = (Element) doc.getElementsByTagName("Valute").item(j);
+
+                switch (classElement.getAttribute("ID")) {
+                    case "44":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                    case "47":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                    case "36":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                    case "35":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                    case "43":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                    case "17":
+                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                            outputToFile(rates, outputStream, doc, j);
+                        }
+                        break;
+                }
             }
 
 
@@ -144,10 +131,10 @@ public class Banking extends JFrame {
 
         comboBox1.addItemListener((ItemEvent e) -> {
             switch ((String) e.getItem()) {
-                case "USD":
+                case "EUR":
                     fillFieldFromMDL(rates.get(0));
                     break;
-                case "EUR":
+                case "USD":
                     fillFieldFromMDL(rates.get(1));
                     break;
                 case "RUB":
@@ -166,10 +153,10 @@ public class Banking extends JFrame {
         });
         comboBox3.addItemListener((ItemEvent e) -> {
             switch ((String) e.getItem()) {
-                case "USD":
+                case "EUR":
                     fillFieldToMDL(rates.get(0));
                     break;
-                case "EUR":
+                case "USD":
                     fillFieldToMDL(rates.get(1));
                     break;
                 case "RUB":
@@ -203,6 +190,18 @@ public class Banking extends JFrame {
 
     }
 
+    private void outputToFile(ArrayList<Element> rates, OutputStream outputStream, Document doc, int j) throws IOException{
+        rates.add((Element) doc.getElementsByTagName("Value").item(j));
+        outputStream.write((doc.getElementsByTagName("CharCode").item(j).getTextContent()+": ").getBytes());
+        if (j == 17){
+            outputStream.write(rates.get(5).getTextContent().getBytes());
+        }
+        else {
+            outputStream.write(rates.get(j).getTextContent().getBytes());
+        }
+        outputStream.write(System.lineSeparator().getBytes());
+    }
+
     private Date getDay(int d) {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, d);
@@ -215,11 +214,11 @@ public class Banking extends JFrame {
     }
 
     private String calculateFromMDL(Element e) {
-        return Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(e.toString()));
+        return Float.toString(Float.parseFloat(textField2.getText()) / Float.parseFloat(e.getTextContent()));
     }
 
     private String calculateToMDL(Element e) {
-        return Float.toString(Float.parseFloat(textField3.getText()) * Float.parseFloat(e.toString()));
+        return Float.toString(Float.parseFloat(textField3.getText()) * Float.parseFloat(e.getTextContent()));
     }
 
     private void fillFieldFromMDL(Element e) {
