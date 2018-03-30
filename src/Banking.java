@@ -11,6 +11,7 @@ import javax.swing.plaf.basic.BasicLookAndFeel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,11 +19,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -119,16 +122,6 @@ public class Banking extends JFrame {
         }
 
 
-//        Document doc = Jsoup.connect("https://point.md/ru/").get();
-//
-//
-//        rates.add(doc.select("td#money-trade-buy-usd").first());
-//        rates.add(doc.select("td#money-trade-buy-eur").first());
-//        rates.add(doc.select("td#money-trade-buy-rub").first());
-//        rates.add(doc.select("td#money-trade-buy-ron").first());
-//        rates.add(doc.select("td#money-trade-buy-uah").first());
-//        rates.add(doc.select("td#money-trade-buy-gbp").first());
-
         comboBox1.addItemListener((ItemEvent e) -> {
             switch ((String) e.getItem()) {
                 case "EUR":
@@ -174,29 +167,14 @@ public class Banking extends JFrame {
             }
         });
 
-//        LocalDate date = LocalDate.now();
-
-//
-//        ArrayList<String> currencies = new ArrayList<>();
-//        for (int i = 1; i < 7; i++){
-//            currencies.add(comboBox1.getItemAt(i).toString());
-//        }
-//
-//        for (int i = 0; i < currencies.size(); i++) {
-//            outputStream.write((currencies.get(i)+": ").getBytes());
-//
-//        }
-
-
     }
 
-    private void outputToFile(ArrayList<Element> rates, OutputStream outputStream, Document doc, int j) throws IOException{
+    private void outputToFile(ArrayList<Element> rates, OutputStream outputStream, Document doc, int j) throws IOException {
         rates.add((Element) doc.getElementsByTagName("Value").item(j));
-        outputStream.write((doc.getElementsByTagName("CharCode").item(j).getTextContent()+": ").getBytes());
-        if (j == 17){
+        outputStream.write((doc.getElementsByTagName("CharCode").item(j).getTextContent() + ": ").getBytes());
+        if (j == 17) {
             outputStream.write(rates.get(5).getTextContent().getBytes());
-        }
-        else {
+        } else {
             outputStream.write(rates.get(j).getTextContent().getBytes());
         }
         outputStream.write(System.lineSeparator().getBytes());
@@ -227,6 +205,10 @@ public class Banking extends JFrame {
 
     private void fillFieldToMDL(Element e) {
         textField4.setText(calculateToMDL(e));
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "stasik");
     }
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
