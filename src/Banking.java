@@ -1,7 +1,4 @@
 import com.bulenkov.darcula.DarculaLaf;
-//import org.jsoup.Jsoup;
-//import org.jsoup.nodes.Document;
-//import org.jsoup.nodes.Element;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -11,7 +8,6 @@ import javax.swing.plaf.basic.BasicLookAndFeel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,16 +15,16 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import java.util.*;
+
+//import org.jsoup.Jsoup;
+//import org.jsoup.nodes.Document;
+//import org.jsoup.nodes.Element;
 
 
 public class Banking extends JFrame {
@@ -48,13 +44,8 @@ public class Banking extends JFrame {
 
         setTitle("BankingApp");
         textArea1.setEditable(false);
-
-        Logger logger = Logger.getLogger(Banking.class.getName());
-        Logger rootLogger = Logger.getLogger("");
-        Handler[] handlers = rootLogger.getHandlers();
-        if (handlers[0] instanceof ConsoleHandler) {
-            rootLogger.removeHandler(handlers[0]);
-        }
+        textField1.setEditable(false);
+        textField4.setEditable(false);
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -74,6 +65,8 @@ public class Banking extends JFrame {
 
         OutputStream outputStream = Files.newOutputStream(file);
         String url;
+        String[] ids = {"44", "47", "36", "35", "43", "17"};
+        List<String> idList = new ArrayList<>(Arrays.asList(ids));
 
         for (int i = 0; i > -8; i--) {
             date = getDayString(i);
@@ -84,86 +77,27 @@ public class Banking extends JFrame {
             for (int j = 0; j < doc.getElementsByTagName("Valute").getLength(); j++) {
                 classElement = (Element) doc.getElementsByTagName("Valute").item(j);
 
-                switch (classElement.getAttribute("ID")) {
-                    case "44":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
-                    case "47":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
-                    case "36":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
-                    case "35":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
-                    case "43":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
-                    case "17":
-                        if (!rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
-                            outputToFile(rates, outputStream, doc, j);
-                        }
-                        break;
+                if (idList.contains(classElement.getAttribute("ID")) && !rates.contains((Element) doc.getElementsByTagName("Value").item(j))) {
+                    outputToFile(rates, outputStream, doc, j);
                 }
             }
-
-
         }
 
+        String[] currencies = {"EUR", "USD", "RUB", "RON", "UAH", "GBP"};
+        List<String> currencyList = new ArrayList<>(Arrays.asList(currencies));
 
         comboBox1.addItemListener((ItemEvent e) -> {
-            switch ((String) e.getItem()) {
-                case "EUR":
-                    fillFieldFromMDL(rates.get(0));
-                    break;
-                case "USD":
-                    fillFieldFromMDL(rates.get(1));
-                    break;
-                case "RUB":
-                    fillFieldFromMDL(rates.get(2));
-                    break;
-                case "RON":
-                    fillFieldFromMDL(rates.get(3));
-                    break;
-                case "UAH":
-                    fillFieldFromMDL(rates.get(4));
-                    break;
-                case "GBP":
-                    fillFieldFromMDL(rates.get(5));
-                    break;
+            for (int j = 0; j < comboBox1.getItemCount(); j++){
+                if (currencyList.contains((String)e.getItem())){
+                    fillFieldFromMDL(rates.get(j));
+                }
             }
         });
         comboBox3.addItemListener((ItemEvent e) -> {
-            switch ((String) e.getItem()) {
-                case "EUR":
-                    fillFieldToMDL(rates.get(0));
-                    break;
-                case "USD":
-                    fillFieldToMDL(rates.get(1));
-                    break;
-                case "RUB":
-                    fillFieldToMDL(rates.get(2));
-                    break;
-                case "RON":
-                    fillFieldToMDL(rates.get(3));
-                    break;
-                case "UAH":
-                    fillFieldToMDL(rates.get(4));
-                    break;
-                case "GBP":
-                    fillFieldToMDL(rates.get(5));
-                    break;
+            for (int j = 0; j < comboBox3.getItemCount(); j++){
+                if (currencyList.contains((String)e.getItem())){
+                    fillFieldToMDL(rates.get(j));
+                }
             }
         });
 
@@ -200,11 +134,19 @@ public class Banking extends JFrame {
     }
 
     private void fillFieldFromMDL(Element e) {
-        textField1.setText(calculateFromMDL(e));
+        try {
+            textField1.setText(calculateFromMDL(e));
+        } catch (NumberFormatException e1) {
+            JOptionPane.showMessageDialog(panel1, "Enter a value");
+        }
     }
 
     private void fillFieldToMDL(Element e) {
-        textField4.setText(calculateToMDL(e));
+        try {
+            textField4.setText(calculateToMDL(e));
+        } catch (NumberFormatException e1) {
+            JOptionPane.showMessageDialog(panel1, "Enter a value");
+        }
     }
 
     private Connection getConnection() throws SQLException {
