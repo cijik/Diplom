@@ -9,9 +9,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.event.ItemEvent;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 //import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
@@ -35,7 +37,7 @@ public class Banking extends JFrame {
     private JTextField textField1;
     private JTextField textField2;
     private JTextArea textArea1;
-    private JComboBox comboBox2;
+    private JComboBox<String> comboBox2;
     private JTextField textField3;
     private JComboBox comboBox3;
     private JTextField textField4;
@@ -47,8 +49,8 @@ public class Banking extends JFrame {
         textField1.setEditable(false);
         textField4.setEditable(false);
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         Document doc;
         Element classElement;
         ArrayList<Element> rates = new ArrayList<>();
@@ -64,16 +66,19 @@ public class Banking extends JFrame {
         }
 
         OutputStream outputStream = Files.newOutputStream(file);
+        InputStream inputStream = Files.newInputStream(file);
         String url;
         String[] ids = {"44", "47", "36", "35", "43", "17"};
         List<String> idList = new ArrayList<>(Arrays.asList(ids));
 
         for (int i = 0; i > -8; i--) {
             date = getDayString(i);
+            comboBox2.addItem(date);
             outputStream.write(date.getBytes());
             outputStream.write(System.lineSeparator().getBytes());
             url = "https://www.bnm.md/en/official_exchange_rates?get_xml=1&date=" + date;
-            doc = db.parse(new URL(url).openStream());
+            doc = docBuilder.parse(new URL(url).openStream());
+            rates.clear();
             for (int j = 0; j < doc.getElementsByTagName("Valute").getLength(); j++) {
                 classElement = (Element) doc.getElementsByTagName("Valute").item(j);
 
@@ -99,6 +104,9 @@ public class Banking extends JFrame {
                     fillFieldToMDL(rates.get(j));
                 }
             }
+        });
+        comboBox2.addItemListener((ItemEvent e) -> {
+
         });
 
     }
@@ -137,7 +145,7 @@ public class Banking extends JFrame {
         try {
             textField1.setText(calculateFromMDL(e));
         } catch (NumberFormatException e1) {
-            JOptionPane.showMessageDialog(panel1, "Enter a value");
+            JOptionPane.showMessageDialog(panel1, "Enter a numeric value");
         }
     }
 
@@ -145,12 +153,20 @@ public class Banking extends JFrame {
         try {
             textField4.setText(calculateToMDL(e));
         } catch (NumberFormatException e1) {
-            JOptionPane.showMessageDialog(panel1, "Enter a value");
+            JOptionPane.showMessageDialog(panel1, "Enter a numeric value");
         }
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "stasik");
+        final String dialect = "mysql";
+        final String host = "localhost";
+        final int port = 3306;
+        final String schema = "banking";
+        final String timezone = "UTC";
+        final String user = "root";
+        final String password = "stasik";
+        String address = String.format("jdbc:%s://%s:%d/%s?serverTimezone=%s", dialect, host, port, schema, timezone);
+        return DriverManager.getConnection(address, user, password);
     }
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {

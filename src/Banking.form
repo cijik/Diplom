@@ -117,7 +117,7 @@
               <component id="9d7ea" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
                 <constraints/>
                 <properties>
-                  <columns value="70"/>
+                  <columns value="50"/>
                   <editable value="false"/>
                   <rows value="10"/>
                 </properties>
