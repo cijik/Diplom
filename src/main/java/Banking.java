@@ -10,18 +10,19 @@ import javax.swing.plaf.basic.BasicLookAndFeel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 //import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
@@ -41,9 +42,16 @@ public class Banking extends JFrame {
     private JComboBox comboBox3;
     private JTextField textField4;
     private JTextPane textPane1;
+    private JTextField textField5;
+    private JTextField textField6;
+    private JComboBox comboBox4;
+    private JTextField textField7;
+    private JButton sendButton;
 
     private static Logger logger = LoggerFactory.getLogger(Banking.class);
     private Path file = getFile();
+    private List<Integer> list = new ArrayList<>();
+    private ConnectionHandler connectionHandler;
 
     private Banking() throws IOException, ParserConfigurationException, SAXException {
 
@@ -66,6 +74,7 @@ public class Banking extends JFrame {
         String url;
         String[] ids = {"44", "47", "36", "35", "43", "17"};
         List<String> idList = new ArrayList<>(Arrays.asList(ids));
+        comboBox2.addItem("");
 
         for (int i = 0; i > -8; i--) {
             date = getDayString(i);
@@ -84,6 +93,17 @@ public class Banking extends JFrame {
             }
         }
 
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            logger.error("Unable to load database driver");
+        }
+
+        try {
+            connectionHandler = new ConnectionHandler(getConnection());
+        } catch (SQLException e) {
+            logger.error("Couldn't establish a database connection");
+        }
         addListeners(rates, bufferedReader);
 
     }
@@ -106,15 +126,15 @@ public class Banking extends JFrame {
         List<String> currencyList = new ArrayList<>(Arrays.asList(currencies));
 
         comboBox1.addItemListener((ItemEvent e) -> {
-            for (int j = 0; j < comboBox1.getItemCount(); j++){
-                if (currencyList.contains(e.getItem())){
+            for (int j = 0; j < comboBox1.getItemCount()-1; j++){
+                if (currencyList.get(j) == e.getItem()){
                     fillFieldFromMDL(rates.get(j));
                 }
             }
         });
         comboBox3.addItemListener((ItemEvent e) -> {
-            for (int j = 0; j < comboBox3.getItemCount(); j++){
-                if (currencyList.contains(e.getItem())){
+            for (int j = 0; j < comboBox3.getItemCount()-1; j++){
+                if (currencyList.get(j) == e.getItem()){
                     fillFieldToMDL(rates.get(j));
                 }
             }
@@ -123,6 +143,9 @@ public class Banking extends JFrame {
             textArea1.setText("");
             String s;
             StringBuilder endString = new StringBuilder();
+            if (e.getItem() == ""){
+                textArea1.setText("");
+            }
             try {
                 bufferedReader.mark((int)Files.size(file)+1);
                 while ((s = bufferedReader.readLine()) != null){
@@ -138,6 +161,22 @@ public class Banking extends JFrame {
                 bufferedReader.reset();
             } catch (IOException e1) {
                 e1.printStackTrace();
+            }
+        });
+        sendButton.addActionListener((ActionEvent e) -> {
+            String request = "update banking " +
+                    "set funds = " +
+                    "CASE account_id " +
+                    "when ? then (select funds from (SELECT * from banking) as table1 where account_id = ?)-? " +
+                    "when ? then (select funds from (SELECT * from banking) as table1 where account_id = ?)+? " +
+                    "end";
+            list.add(Integer.parseInt(textField5.getText()));
+            list.add(Integer.parseInt(textField6.getText()));
+            list.add(Integer.parseInt(textField7.getText()));
+            try {
+                connectionHandler.update(request, list);
+            } catch (SQLException e1) {
+                logger.error("Couldn't execute update");
             }
         });
     }
@@ -192,10 +231,10 @@ public class Banking extends JFrame {
         final String dialect = "mysql";
         final String host = "localhost";
         final int port = 3306;
-        final String schema = "banking";
+        final String schema = "diplom";
         final String timezone = "UTC";
         final String user = "root";
-        final String password = "stasik";
+        final String password = "root";
         String address = String.format("jdbc:%s://%s:%d/%s?serverTimezone=%s", dialect, host, port, schema, timezone);
         return DriverManager.getConnection(address, user, password);
     }

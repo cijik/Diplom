@@ -16,7 +16,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <grid id="13271" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="13271" layout-manager="GridBagLayout">
             <constraints>
               <tabbedpane title="Convert"/>
             </constraints>
@@ -27,21 +27,20 @@
             <border type="none"/>
             <children>
               <component id="c6d90" class="javax.swing.JLabel">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <font name="Segoe UI" style="0"/>
                   <text value="MDL-&gt;"/>
                 </properties>
               </component>
-              <component id="5736a" class="javax.swing.JTextField" binding="textField2" default-binding="true">
-                <constraints/>
-                <properties>
-                  <columns value="10"/>
-                  <text value=""/>
-                </properties>
-              </component>
               <component id="b1cfb" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <model>
                     <item value=""/>
@@ -54,27 +53,30 @@
                   </model>
                 </properties>
               </component>
-              <component id="51a5f" class="javax.swing.JTextField" binding="textField1" default-binding="true">
-                <constraints/>
-                <properties>
-                  <columns value="10"/>
-                </properties>
-              </component>
               <component id="da19b" class="javax.swing.JLabel">
-                <constraints/>
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <font name="Segoe UI" style="0"/>
                   <text value="-&gt;MDL"/>
                 </properties>
               </component>
               <component id="c3e6b" class="javax.swing.JTextField" binding="textField3" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <columns value="10"/>
                 </properties>
               </component>
               <component id="1923d" class="javax.swing.JComboBox" binding="comboBox3" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <model>
                     <item value=""/>
@@ -88,14 +90,49 @@
                 </properties>
               </component>
               <component id="89cb" class="javax.swing.JTextField" binding="textField4" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <columns value="10"/>
                 </properties>
               </component>
+              <component id="51a5f" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                <constraints>
+                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <columns value="10"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="5736a" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <columns value="10"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <hspacer id="61a41">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="57c71">
+                <constraints>
+                  <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
             </children>
           </grid>
-          <grid id="a6429" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="a6429" layout-manager="GridBagLayout">
             <constraints>
               <tabbedpane title="History"/>
             </constraints>
@@ -103,7 +140,10 @@
             <border type="none"/>
             <children>
               <component id="5160e" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <alignmentX value="0.0"/>
                   <autoscrolls value="true"/>
@@ -112,7 +152,10 @@
                 </properties>
               </component>
               <component id="9d7ea" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties>
                   <columns value="33"/>
                   <editable value="false"/>
@@ -120,18 +163,85 @@
                 </properties>
               </component>
               <component id="80540" class="javax.swing.JTextPane" binding="textPane1" default-binding="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties/>
               </component>
             </children>
           </grid>
-          <grid id="aa6e1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="aa6e1" layout-manager="GridBagLayout">
             <constraints>
               <tabbedpane title="Transfer"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <component id="2ba11" class="javax.swing.JTextField" binding="textField5" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <columns value="15"/>
+                </properties>
+              </component>
+              <component id="31f31" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Your account"/>
+                </properties>
+              </component>
+              <component id="5a585" class="javax.swing.JTextField" binding="textField6" default-binding="true">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <columns value="15"/>
+                </properties>
+              </component>
+              <component id="82201" class="javax.swing.JButton" binding="sendButton" default-binding="true">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Send"/>
+                </properties>
+              </component>
+              <component id="999d1" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Reciever's account"/>
+                </properties>
+              </component>
+              <component id="d359a" class="javax.swing.JTextField" binding="textField7" default-binding="true">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <columns value="15"/>
+                </properties>
+              </component>
+              <component id="b6646" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="Money"/>
+                </properties>
+              </component>
+            </children>
           </grid>
         </children>
       </tabbedpane>
